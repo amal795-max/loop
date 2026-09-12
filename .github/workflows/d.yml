@@ -1,0 +1,82 @@
+name: Flutter CI/CD
+
+# Trigger the workflow on pushes or pull requests to the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # --- 1. CONTINUOUS INTEGRATION (CI) JOB ---
+  test_and_lint:
+    name: Run Lints and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Sets up Flutter environment and handles caching automatically
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          # Or specify an exact version: flutter-version: '3.22.x'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze code (Linter)
+        run: flutter analyze
+
+      - name: Run unit and widget tests
+        run: flutter test
+
+  # --- 2. CONTINUOUS DELIVERY (CD) JOB ---
+  build_apps:
+    name: Build Android & iOS Apps
+    needs: test_and_lint # Only runs if tests pass
+    runs-on: macos-latest # macOS is required to build for iOS
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Build Android Release APK
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      # Build iOS Release (Will require iOS signing certificates for App Store deployment)
+      - name: Build iOS App
+        run: flutter build ios --release --no-codesign
+
+      # Upload the Android APK artifact so you can download it from GitHub
+      - name: Upload Android Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
