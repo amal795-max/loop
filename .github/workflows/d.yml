@@ -42,41 +42,41 @@ jobs:
       - name: Run unit and widget tests
         run: flutter test
 
-  # --- 2. CONTINUOUS DELIVERY (CD) JOB ---
-  build_apps:
-    name: Build Android & iOS Apps
-    needs: test_and_lint # Only runs if tests pass
-    runs-on: macos-latest # macOS is required to build for iOS
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      # Build Android Release APK
-      - name: Build Android APK
-        run: flutter build apk --release
-
-      # Build iOS Release (Will require iOS signing certificates for App Store deployment)
-      - name: Build iOS App
-        run: flutter build ios --release --no-codesign
-
-      # Upload the Android APK artifact so you can download it from GitHub
-      - name: Upload Android Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+#  # --- 2. CONTINUOUS DELIVERY (CD) JOB ---
+#  build_apps:
+#    name: Build Android & iOS Apps
+#    needs: test_and_lint # Only runs if tests pass
+#    runs-on: macos-latest # macOS is required to build for iOS
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Set up Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'zulu'
+#          java-version: '17'
+#
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          channel: 'stable'
+#
+#      - name: Install dependencies
+#        run: flutter pub get
+#
+#      # Build Android Release APK
+#      - name: Build Android APK
+#        run: flutter build apk --release
+#
+#      # Build iOS Release (Will require iOS signing certificates for App Store deployment)
+#      - name: Build iOS App
+#        run: flutter build ios --release --no-codesign
+#
+#      # Upload the Android APK artifact so you can download it from GitHub
+#      - name: Upload Android Build Artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: release-apk
+#          path: build/app/outputs/flutter-apk/app-release.apk
