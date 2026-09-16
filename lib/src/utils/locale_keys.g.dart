@@ -31,6 +31,23 @@ class CodegenLoader extends AssetLoader{
     "welcome_home": "Welcome Home!",
     "home_subtitle": "You have successfully completed the onboarding process."
   },
+  "profile": {
+    "complete_profile": "Complete your profile",
+    "complete_profile_desc": "Personalize your identity so verified teammates and contacts recognize you on Loop.",
+    "upload_photo_optional": "Upload photo (Optional)",
+    "full_name": "Full Name",
+    "username": "Username",
+    "mobile_number": "Mobile Number",
+    "dob": "Date of Birth",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "available": "Available",
+    "otp_verified": "OTP Verified",
+    "used_for_verification": "Used for verification",
+    "complete_registration": "Complete Registration"
+  },
   "auth": {
     "log_in": "Log in",
     "log_in_subtitle": "Enter your email and password",
@@ -77,6 +94,27 @@ static const Map<String,dynamic> _en = {
     "home_title": "Home",
     "welcome_home": "Welcome Home!",
     "home_subtitle": "You have successfully completed the onboarding process."
+  },
+  "profile": {
+    "complete_profile": "Complete your profile",
+    "complete_profile_desc": "Personalize your identity so verified teammates and contacts recognize you on Loop.",
+    "upload_photo_optional": "Upload photo (Optional)",
+
+    "full_name": "Full Name",
+    "username": "Username",
+    "mobile_number": "Mobile Number",
+    "dob": "Date of Birth",
+    "gender": "Gender",
+
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+
+    "available": "Available",
+    "otp_verified": "OTP Verified",
+    "used_for_verification": "Used for verification",
+
+    "complete_registration": "Complete Registration"
   },
   "auth": {
     "log_in": "Log in",

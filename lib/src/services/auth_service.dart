@@ -1,74 +1,45 @@
-import 'dart:async';
-import '../utils/utils.dart';
-import '../config/app_config.dart';
-import 'package:dio/dio.dart';
+import '../data/models/user_info_model.dart';
+import '../data/models/user_model.dart';
+import '../imports/imports.dart';
+import '../utils/app_urls.dart';
+import '../utils/body_params.dart';
 
 class AuthService {
-  AuthService._();
-  static final AuthService instance = AuthService._();
+  AuthService._(this._dioService);
+  static final AuthService instance = AuthService._(DioService.instance);
 
-  Dio get _dio => AppConfig.dio;
+  final DioService _dioService;
 
-  // Custom Backend doesn't have a built-in auth state stream, so we manage our own
-  final StreamController<Map<String, dynamic>?> _authStateController =
-      StreamController<Map<String, dynamic>?>.broadcast();
+  FutureEither<String> login(String phone) async {
+    final result = await _dioService.post(
+      UrlPath.login,
+      data: {'phone': phone},
+    );
 
-  /// Stream of auth state changes. Emits the current user map or null.
-  Stream<Map<String, dynamic>?> get authStateChanges => _authStateController.stream;
-
-  FutureEither<Map<String, dynamic>?> login({
-    required String email,
-    required String password,
-  }) async {
-    return runTask(() async {
-      final response = await _dio.post<Map<String, dynamic>>('/auth/login', data: {
-        'email': email,
-        'password': password,
-      });
-      final data = response.data!;
-      _authStateController.add(data);
-      return data;
-    }, requiresNetwork: true);
+    return result.fold(
+          (failure) => left(failure),
+          (response) => right(response.data['token']),
+    );
   }
 
-  FutureEither<Map<String, dynamic>?> signUp({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
-    return runTask(() async {
-      final response = await _dio.post<Map<String, dynamic>>('/auth/signup', data: {
-        'name': name,
-        'email': email,
-        'password': password,
-      });
-      final data = response.data!;
-      _authStateController.add(data);
-      return data;
-    }, requiresNetwork: true);
+  FutureEither<RegisterModel> register(RegisterParams params) async {
+    final result = await _dioService.post(
+      UrlPath.register,
+      data: params.toJson(),
+    );
+    return result.fold(
+          (failure) => left(failure),
+          (response) => right(RegisterModel.fromJson(response.data)),
+    );
   }
 
-  FutureEither<void> forgotPassword({required String email}) async {
-    return runTask(() async {
-      await _dio.post<void>('/auth/forgot-password', data: {'email': email});
-    }, requiresNetwork: true);
-  }
-
-  FutureEither<void> logout() async {
-    return runTask(() async {
-      await _dio.post<void>('/auth/logout');
-      _authStateController.add(null);
-    }, requiresNetwork: true);
-  }
-
-  FutureEither<Map<String, dynamic>?> getCurrentUser() async {
-    return runTask(() async {
-      final response = await _dio.get<Map<String, dynamic>>('/auth/me');
-      return response.data;
-    });
-  }
-
-  void dispose() {
-    _authStateController.close();
+  FutureEither<UserInfoModel> getCurrentUser() async {
+    final result = await _dioService.get(
+      UrlPath.getInfo,
+    );
+    return result.fold(
+          (failure) => left(failure),
+          (response) => right(UserInfoModel.fromJson(response.data)),
+    );
   }
 }

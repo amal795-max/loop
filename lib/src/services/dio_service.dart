@@ -1,13 +1,11 @@
 import 'package:dio/dio.dart';
-import '../config/app_config.dart';
+import '../core/api/app_config.dart';
 import '../utils/utils.dart';
 
-/// A robust networking service powered by Dio.
 class DioService {
   DioService._();
   static final DioService instance = DioService._();
 
-  // --- HTTP Methods ---
 
   FutureEither<Response<dynamic>> get(
     String path, {

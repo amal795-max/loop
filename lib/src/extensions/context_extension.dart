@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../theme/color_schemes.dart';
-import '../theme/theme.dart';
-import '../shared/enums/snack_bar_type.dart';
+import '../imports/core_imports.dart';
 
 extension ContextExtension on BuildContext {
   // ── Theme shortcuts ──────────────────────────────────────────────────────

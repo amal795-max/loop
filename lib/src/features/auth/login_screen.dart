@@ -1,7 +1,7 @@
 import 'package:loop/src/imports/core_imports.dart';
 import 'package:loop/src/imports/packages_imports.dart';
 
-import 'package:loop/src/ui/auth/providers/auth_provider.dart';
+import 'package:loop/src/features/auth/providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -25,7 +25,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authControllerProvider);
+    final loginState = ref.watch(loginProvider);
+    final loginNotifier = ref.read(loginProvider.notifier);
+    final isLoading = loginState.isLoading;
 
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
@@ -33,21 +35,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     Future<void> handleLogin() async {
       if (!(_formKey.currentState?.validate() ?? false)) return;
 
-
-      ref.read(authControllerProvider.notifier).login(
+      loginNotifier.loginUser(
         context: context,
-        email: _emailController.text,
-        password: _passwordController.text,
+        phone: _emailController.text,
       );
     }
 
     return _LoginView(
       formKey: _formKey,
-      emailController: _emailController,
+      phoneController: _emailController,
       passwordController: _passwordController,
       obscurePassword: _obscurePassword,
       isLoading: isLoading,
-      onToggleObscure: () => setState(() => _obscurePassword = !_obscurePassword),
+      onToggleObscure: () =>
+          setState(() => _obscurePassword = !_obscurePassword),
       onLogin: handleLogin,
       cs: cs,
       tt: tt,
@@ -58,7 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 class _LoginView extends StatelessWidget {
   const _LoginView({
     required this.formKey,
-    required this.emailController,
+    required this.phoneController,
     required this.passwordController,
     required this.obscurePassword,
     required this.isLoading,
@@ -69,7 +70,7 @@ class _LoginView extends StatelessWidget {
   });
 
   final GlobalKey<FormState> formKey;
-  final TextEditingController emailController;
+  final TextEditingController phoneController;
   final TextEditingController passwordController;
   final bool obscurePassword;
   final bool isLoading;
@@ -91,7 +92,8 @@ class _LoginView extends StatelessWidget {
                 SizedBox(height: AppSpacing.xl.h),
                 Text(
                   'auth.log_in'.tr(),
-                  style: tt.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                  style:
+                      tt.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: AppSpacing.sm.h),
                 Text(
@@ -106,41 +108,26 @@ class _LoginView extends StatelessWidget {
                   child: Column(
                     children: [
                       AppTextField(
-                        controller: emailController,
-                        enabled: !isLoading,
-                        label: 'auth.email'.tr(),
-                        prefixIcon: const Icon(Icons.email_outlined),
-                        validator: (v) {
-                          if (AppUtils.isBlank(v)) {
-                            return 'auth.email_required'.tr();
-                          }
-                          if (!AppUtils.isValidEmail(v!)) {
-                            return 'auth.email_invalid'.tr();
-                          }
-                          return null;
-                        },
+                          controller: phoneController,
+                          enabled: !isLoading,
+                          label: 'Phone (+966500000000)',
+                          prefixIcon: const Icon(Icons.phone_outlined),
+                          // validator: (v) => phoneValid(v)
                       ),
                       SizedBox(height: AppSpacing.md.h),
-                                         AppTextField(
-                        controller: passwordController,
-                        enabled: !isLoading,
-                        label: 'auth.password'.tr(),
-                        obscureText: obscurePassword,
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(obscurePassword ? Icons.visibility_off : Icons.visibility),
-                          onPressed: onToggleObscure,
-                        ),
-                         validator: (v) {
-                          if (AppUtils.isBlank(v)) {
-                            return 'auth.password_required'.tr();
-                          }
-                          if (v!.length < 6) {
-                            return 'auth.password_too_short'.tr();
-                          }
-                          return null;
-                        },
-                      ),
+                      AppTextField(
+                          controller: passwordController,
+                          enabled: !isLoading,
+                          label: 'auth.password'.tr(),
+                          obscureText: obscurePassword,
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            icon: Icon(obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: onToggleObscure,
+                          ),
+                          validator: passwordValidator),
                       SizedBox(height: AppSpacing.sm.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -158,7 +145,8 @@ class _LoginView extends StatelessWidget {
                               ),
                               Text(
                                 'auth.remember_me'.tr(),
-                                style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                                style: tt.bodySmall
+                                    ?.copyWith(color: cs.onSurfaceVariant),
                               ),
                             ],
                           ),
@@ -167,7 +155,8 @@ class _LoginView extends StatelessWidget {
                               padding: EdgeInsets.zero,
                             ),
                             onPressed: () {
-                              context.push(AppRoutes.forgotPassword);
+                              // context.push(AppRoutes.forgotPassword);
+                              context.go(AppRoutes.home);
                             },
                             child: Text(
                               'auth.forgot_password'.tr(),
@@ -202,7 +191,8 @@ class _LoginView extends StatelessWidget {
                           child: TextButton(
                             onPressed: () {},
                             style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFEA4335).withValues(alpha: 0.8),
+                              backgroundColor: const Color(0xFFEA4335)
+                                  .withValues(alpha: 0.8),
                               padding: EdgeInsets.symmetric(horizontal: 10.w),
                               shape: const RoundedRectangleBorder(
                                 borderRadius: AppBorders.button,
@@ -253,7 +243,8 @@ class _LoginView extends StatelessWidget {
                   child: RichText(
                     text: TextSpan(
                       text: 'auth.dont_have_account'.tr(),
-                      style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                      style:
+                          tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
                       children: [
                         TextSpan(
                           text: 'auth.sign_up'.tr(),

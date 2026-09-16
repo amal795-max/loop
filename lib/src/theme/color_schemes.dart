@@ -92,35 +92,41 @@ class AppPalettes {
   AppPalettes._();
 
   static const light = AppColorsExtension(
-    success: Color(0xFF2E7D32),
+    success: Color(0xFF1A365D),          // Midnight blue (success state)
     onSuccess: Colors.white,
-    successContainer: Color(0xFFA5D6A7),
-    onSuccessContainer: Color(0xFF1B5E20),
-    warning: Color(0xFFED6C02),
+    successContainer: Color(0xFFF1F5F9), // Neutral bubble
+    onSuccessContainer: Color(0xFF0F172A),
+
+    warning: Color(0xFFED6C02),          // Amber (consistent with design tone)
     onWarning: Colors.white,
-    warningContainer: Color(0xFFFFCC80),
-    onWarningContainer: Color(0xFFE65100),
-    info: Color(0xFF0288D1),
+    warningContainer: Color(0xFFFFF4E5), // Soft warm container
+    onWarningContainer: Color(0xFF7A3E00),
+
+    info: Color(0xFF2563EB),             // Action Accent
     onInfo: Colors.white,
-    infoContainer: Color(0xFF81D4FA),
-    onInfoContainer: Color(0xFF01579B),
+    infoContainer: Color(0xFFDCE9FF),    // Light blue container
+    onInfoContainer: Color(0xFF003EA8),
+
+  );
+  static const dark = AppColorsExtension(
+    success: Color(0xFFADC7F7),          // tertiary-fixed-dim
+    onSuccess: Color(0xFF001B3C),
+    successContainer: Color(0xFF0F2137), // primary-container
+    onSuccessContainer: Color(0xFFCBD5E1),
+
+    warning: Color(0xFFFFB74D),
+    onWarning: Color(0xFF4A2C00),
+    warningContainer: Color(0xFFE65100),
+    onWarningContainer: Color(0xFFFFE8C2),
+
+    info: Color(0xFF4F7FFF),             // brighter accent for dark mode
+    onInfo: Colors.white,
+    infoContainer: Color(0xFF1A365D),
+    onInfoContainer: Color(0xFFB6C8E4),
+
   );
 
-  static const dark = AppColorsExtension(
-    success: Color(0xFF81C784),
-    onSuccess: Color(0xFF003300),
-    successContainer: Color(0xFF1B5E20),
-    onSuccessContainer: Color(0xFFA5D6A7),
-    warning: Color(0xFFFFB74D),
-    onWarning: Color(0xFF5D4037),
-    warningContainer: Color(0xFFE65100),
-    onWarningContainer: Color(0xFFFFCC80),
-    info: Color(0xFF4FC3F7),
-    onInfo: Color(0xFF01579B),
-    infoContainer: Color(0xFF0277BD),
-    onInfoContainer: Color(0xFFE1F5FE),
-  );
 }
 
 /// Access semantic colors via `context.appColors` from `context_extension.dart`.
-/// Example: `context.appColors.success`
+/// Example: `context.appColors.success`

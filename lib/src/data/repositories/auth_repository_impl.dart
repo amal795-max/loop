@@ -1,99 +1,102 @@
-import 'package:loop/src/imports/core_imports.dart';
-import 'package:loop/src/imports/packages_imports.dart';
-
+import 'package:fpdart/fpdart.dart';
+import 'package:loop/src/data/models/user_info_model.dart';
 import 'package:loop/src/data/models/user_model.dart';
 import 'package:loop/src/data/repositories/auth_repository.dart';
+import 'package:loop/src/services/auth_service.dart';
+import 'package:loop/src/services/secure_storage_service.dart';
+import 'package:loop/src/utils/body_params.dart';
+import 'package:loop/src/utils/utils.dart';
+
+import '../../utils/app_urls.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthService _authService = AuthService.instance;
+  final AuthService _service = AuthService.instance;
+  final SecureStorageService _storage = SecureStorageService.instance;
 
   @override
-  Stream<AppUser?> get onAuthStateChanged {
-    return _authService.authStateChanges.map((userData) {
-      if (userData == null) return null;
-      return AppUser(
-        id: userData['id'] ?? '',
-        email: userData['email'] ?? '',
-        name: userData['name'],
-        photoUrl: userData['photoUrl'],
-      );
-    });
-  }
+  FutureEither<Unit> login({required String phone}) async {
+    final result = await _service.login(phone);
 
-  @override
-  FutureEither<AppUser> login({
-    required String email, 
-    required String password,
-  }) async {
-    final result = await _authService.login(email: email, password: password);
-    
-    return result.flatMap((userData) {
-      if (userData == null) {
-        return left(const ServerFailure('Login failed: User record not found'));
-      }
-
-      final data = userData['user'] ?? userData;
-      final user = AppUser(
-        id: data['id'].toString(), 
-        email: data['email'] ?? email, 
-        name: data['name'],
-      );
-      
-      return right(user);
-    });
-  }
-
-  @override
-  FutureEither<AppUser> signUp({
-    required String name, 
-    required String email, 
-    required String password,
-  }) async {
-    final result = await _authService.signUp(
-      name: name,
-      email: email,
-      password: password,
+    return result.fold(
+          (failure) => left(failure),
+          (responseModel) async {
+        final token = responseModel;
+        await _storage.write(Keys.token, token);
+        return right(unit);
+      },
     );
+  }
 
-    return result.flatMap((userData) {
-      if (userData == null) {
-        return left(const ServerFailure('Sign up failed: User record corrupted'));
-      }
 
-      final data = userData['user'] ?? userData;
-      final user = AppUser(
-        id: data['id'].toString(), 
-        email: data['email'] ?? email, 
-        name: name,
-      );
-      
-      return right(user);
-    });
+  @override
+  FutureEither<RegisterModel> register(RegisterParams params) async {
+    final response = await _service.register(params);
+
+    return response.fold(
+          (failure) => left(failure),
+          (responseModel) async {
+        final token = responseModel.user!.token;
+        await _storage.write(Keys.token, token!);
+
+        return right(responseModel);
+      },
+    );
   }
 
   @override
-  FutureEither<void> forgotPassword({required String email}) {
-    return _authService.forgotPassword(email: email);
-  }
+  FutureEither<void> logout() async {
+    await _storage.delete(Keys.token,);
+    return right(null);
 
-  @override
-  FutureEither<void> logout() {
-    return _authService.logout();
-  }
-
-  @override
-  FutureEither<AppUser?> checkAuthState() async {
-    final result = await _authService.getCurrentUser();
-    
-    return result.map((userData) {
-      if (userData == null) return null;
-
-      return AppUser(
-        id: userData['id'], 
-        email: userData['email'] ?? '', 
-        name: userData['name'],
-        photoUrl: userData['photoUrl'],
-      );
-    });
-  }
 }
+//
+// @override
+// FutureEither<AppUser> updateProfile(UpdateProfileParams params) async {
+//   try {
+//     final token = await _storage.read(_tokenKey).then((e) => e.getOrElse(() => null));
+//     if (token == null) return left(DataSource.UNAUTHENTICATED.getFailure());
+//
+//     final response = await _service.updateProfile(
+//       token: token,
+//       fullName: params.fullName,
+//       gender: params.gender,
+//       birthDate: params.birthDate,
+//       bio: params.bio,
+//       connection: params.connection,
+//       image: params.image,
+//     );
+//
+//     final currentUser = await checkAuthState().then((e) => e.getOrElse(() => null));
+//
+//     final updatedUser = currentUser!.copyWith(
+//       fullName: response.userInfo.fullName,
+//       gender: response.userInfo.gender,
+//       birthDate: DateTime.tryParse(response.userInfo.birthDate ?? ''),
+//       bio: response.userInfo.bio,
+//       connection: response.userInfo.connection,
+//       image: response.userInfo.image,
+//     );
+//
+//     return right(updatedUser);
+//   } catch (e) {
+//     return left(ErrorHandler.handle(e));
+//   }
+// }
+//
+@override
+FutureEither<UserInfoModel?> checkAuthState() async {
+    final response = await _service.getCurrentUser();
+
+    return response.fold(
+          (failure) => left(failure),
+          (responseModel) async {
+        return right(responseModel);
+      },
+    );
+  }
+
+  @override
+  // TODO: implement onAuthStateChanged
+  Stream<UserInfoModel?> get onAuthStateChanged => throw UnimplementedError();
+}
+

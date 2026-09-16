@@ -1,7 +1,7 @@
 import 'package:loop/src/imports/core_imports.dart';
 import 'package:loop/src/imports/packages_imports.dart';
 
-import 'package:loop/src/ui/auth/providers/session_provider.dart';
+import 'package:loop/src/features/auth/providers/session_provider.dart';
 
 
 class SessionListenerWrapper extends ConsumerWidget {

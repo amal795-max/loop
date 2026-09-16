@@ -1,10 +1,7 @@
 import 'dart:ui';
 import '../../imports/imports.dart';
 
-/// Shows a premium custom dialog with optional backdrop blur.
-/// 
-/// This helper uses the [rootNavigatorKey] to display the dialog 
-/// without needing a local [BuildContext].
+
 Future<T?> showAppDialog<T>({
   required Widget child,
   bool hasBlur = true,
@@ -42,7 +39,6 @@ Future<T?> showAppDialog<T>({
   );
 }
 
-/// Alias for [showAppDialog] to maintain compatibility with custom references.
 Future<T?> showCustomDialogue<T>({
   required Widget child,
   bool hasBlur = true,

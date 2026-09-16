@@ -17,15 +17,10 @@ FutureEither<T> runTask<T>(
     if (!hasNetwork) {
       AppLogger.warning('Network unavailable for task');
       showGlobalToast(
-        message:
-            'No internet connection. Please check your connection and try again.',
+        message: ResponseMessage.NO_INTERNET_CONNECTION,
         status: 'warning',
       );
-      return left(
-        const NetworkFailure(
-          'No internet connection. Please check your connection and try again.',
-        ),
-      );
+      return left(DataSource.NO_INTERNET_CONNECTION.getFailure());
     }
   }
 
@@ -33,10 +28,7 @@ FutureEither<T> runTask<T>(
     final result = await action();
     return right(result);
   } catch (error, stackTrace) {
-    AppLogger.error('Task execution failed $error', [error, stackTrace]);
-    final errorMessage = AppErrorHandler.format(error);
-
-    // Depending on logic, map error strings/types to specific Failure variants
-    return left(ServerFailure(errorMessage, error: error));
+    AppLogger.error('Task execution failed $error', error, stackTrace);
+    return left(ErrorHandler.handle(error).failure);
   }
 }

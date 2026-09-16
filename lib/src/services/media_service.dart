@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../utils/utils.dart';
 
 /// A service to handle media selection (images, videos, files).
@@ -18,21 +17,6 @@ class MediaService {
     int? imageQuality,
   }) async {
     return runTask(() async {
-      // Check permissions
-      if (source == ImageSource.camera) {
-        final status = await Permission.camera.request();
-        if (!status.isGranted) {
-          throw Exception('Camera permission denied');
-        }
-      } else {
-        if (Platform.isAndroid || Platform.isIOS) {
-          final status = await Permission.photos.request();
-          if (!status.isGranted && !status.isLimited) {
-            throw Exception('Photos permission denied');
-          }
-        }
-      }
-
       final XFile? file = await _imagePicker.pickImage(
         source: source,
         maxWidth: maxWidth,
@@ -44,6 +28,7 @@ class MediaService {
     });
   }
 
+
   /// Pick multiple images from gallery.
   FutureEither<List<File>> pickMultiImage({
     double? maxWidth,
@@ -51,13 +36,6 @@ class MediaService {
     int? imageQuality,
   }) async {
     return runTask(() async {
-      if (Platform.isAndroid || Platform.isIOS) {
-        final status = await Permission.photos.request();
-        if (!status.isGranted && !status.isLimited) {
-          throw Exception('Photos permission denied');
-        }
-      }
-
       final List<XFile> files = await _imagePicker.pickMultiImage(
         maxWidth: maxWidth,
         maxHeight: maxHeight,
@@ -68,26 +46,13 @@ class MediaService {
     });
   }
 
+
   /// Pick a video from gallery or camera.
   FutureEither<File?> pickVideo({
     required ImageSource source,
     Duration? maxDuration,
   }) async {
     return runTask(() async {
-      if (source == ImageSource.camera) {
-        final status = await Permission.camera.request();
-        if (!status.isGranted) {
-          throw Exception('Camera permission denied');
-        }
-      } else {
-        if (Platform.isAndroid || Platform.isIOS) {
-          final status = await Permission.photos.request();
-          if (!status.isGranted && !status.isLimited) {
-            throw Exception('Photos permission denied');
-          }
-        }
-      }
-
       final XFile? file = await _imagePicker.pickVideo(
         source: source,
         maxDuration: maxDuration,
@@ -96,5 +61,6 @@ class MediaService {
       return file != null ? File(file.path) : null;
     });
   }
+
 
 }

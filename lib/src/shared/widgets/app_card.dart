@@ -59,7 +59,7 @@ class AppCard extends StatelessWidget {
             padding: EdgeInsets.only(
               left: AppSpacing.md,
               right: AppSpacing.md,
-              top: AppSpacing.md,
+              top: AppSpacing.sm,
               bottom: AppSpacing.sm,
             ),
             child: Row(

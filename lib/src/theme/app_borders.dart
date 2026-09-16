@@ -11,60 +11,66 @@ abstract final class AppBorders {
 
   // ── Border Radii ──────────────────────────────────────────────────────────
 
-  /// 4 pt — subtle rounding, used for small chips, badges.
-  static const BorderRadius xs = BorderRadius.all(Radius.circular(4));
+  /// 4 pt — sm rounding
+  static const BorderRadius sm4 = BorderRadius.all(Radius.circular(4));
 
-  /// 8 pt — standard rounding for buttons, text fields.
-  static const BorderRadius sm = BorderRadius.all(Radius.circular(8));
+  /// 8 pt — default rounding
+  static const BorderRadius default8 = BorderRadius.all(Radius.circular(8));
 
-  /// 12 pt — medium rounding for cards, list tiles.
-  static const BorderRadius md = BorderRadius.all(Radius.circular(12));
+  /// 12 pt — md rounding
+  static const BorderRadius md12 = BorderRadius.all(Radius.circular(12));
 
-  /// 16 pt — large rounding for modals, bottom sheets.
-  static const BorderRadius lg = BorderRadius.all(Radius.circular(16));
+  /// 16 pt — lg rounding
+  static const BorderRadius lg16 = BorderRadius.all(Radius.circular(16));
 
-  /// 24 pt — extra large rounding for dialogs, feature cards.
-  static const BorderRadius xl = BorderRadius.all(Radius.circular(24));
-
-  /// 28 pt — Material 3 bottom sheet top radius.
-  static const BorderRadius bottomSheet = BorderRadius.vertical(
-    top: Radius.circular(28),
-  );
+  /// 24 pt — xl rounding
+  static const BorderRadius xl24 = BorderRadius.all(Radius.circular(24));
 
   /// Fully circular (pill/stadium shape).
-  static const BorderRadius full = BorderRadius.all(Radius.circular(999));
+  static const BorderRadius full = BorderRadius.all(Radius.circular(9999));
 
   // ── Semantic aliases ──────────────────────────────────────────────────────
 
-  /// Default button border radius.
-  static const BorderRadius button = lg;
+  /// Default button border radius (per DESIGN.md: 16px).
+  static const BorderRadius button = lg16;
 
-  /// Default card border radius.
-  static const BorderRadius card = md;
+  /// Default card border radius (per DESIGN.md: 16px).
+  static const BorderRadius card = lg16;
 
-  /// Default input field border radius.
-  static const BorderRadius input = sm;
+  /// Default input field border radius (per DESIGN.md: 24px/pill).
+  static const BorderRadius input = xl24;
 
   /// Default dialog border radius.
-  static const BorderRadius dialog = xl;
+  static const BorderRadius dialog = xl24;
+  
+  /// Message Bubbles (Asymmetric rounding from DESIGN.md)
+  static const BorderRadius outgoingBubble = BorderRadius.only(
+    topLeft: Radius.circular(18),
+    topRight: Radius.circular(18),
+    bottomRight: Radius.circular(4),
+    bottomLeft: Radius.circular(18),
+  );
+
+  static const BorderRadius incomingBubble = BorderRadius.only(
+    topLeft: Radius.circular(18),
+    topRight: Radius.circular(18),
+    bottomRight: Radius.circular(18),
+    bottomLeft: Radius.circular(4),
+  );
 
   // ── RoundedRectangleBorder shapes (for ShapeBorder APIs) ─────────────────
 
-  /// Small rounded rectangle shape (8 pt).
   static const RoundedRectangleBorder shapeSm = RoundedRectangleBorder(
-    borderRadius: sm,
+    borderRadius: sm4,
   );
 
-  /// Medium rounded rectangle shape (12 pt).
   static const RoundedRectangleBorder shapeMd = RoundedRectangleBorder(
-    borderRadius: md,
+    borderRadius: md12,
   );
 
-  /// Large rounded rectangle shape (16 pt).
   static const RoundedRectangleBorder shapeLg = RoundedRectangleBorder(
-    borderRadius: lg,
+    borderRadius: lg16,
   );
 
-  /// Fully circular/stadium shape.
   static const StadiumBorder stadium = StadiumBorder();
 }

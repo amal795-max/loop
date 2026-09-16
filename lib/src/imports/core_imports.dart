@@ -9,15 +9,14 @@ export 'package:easy_localization/easy_localization.dart' hide TextDirection, Ma
 
 // Project Core — everything exported through shared.dart (theme, extensions,
 // utils, widgets, enums) plus routing and services.
-export '../config/app_config.dart';
+export '../core/api/app_config.dart';
 export '../routing/app_router.dart';
 export '../routing/app_routes.dart';
 export '../routing/global_navigator.dart';
-export '../services/services.dart';
-export '../shared/shared.dart';
+export 'services.dart';
+export 'shared.dart';
 
-export '../ui/auth/login_screen.dart';
-export '../ui/auth/signup_screen.dart';
-export '../ui/auth/forgot_password_screen.dart';
-export '../ui/home/home_page.dart';
-export '../ui/onboarding/onboarding_page.dart';
+export '../features/auth/login_screen.dart';
+export '../features/auth/signup_screen.dart';
+export '../features/home/home_page.dart';
+export '../features/onboarding/onboarding_page.dart';

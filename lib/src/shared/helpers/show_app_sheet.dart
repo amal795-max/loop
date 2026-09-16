@@ -24,7 +24,7 @@ Future<T?> showAppSheet<T>({
     useSafeArea: useSafeArea,
     enableDrag: enableDrag,
     shape: const RoundedRectangleBorder(
-      borderRadius: AppBorders.bottomSheet,
+      borderRadius: AppBorders.outgoingBubble,
     ),
     builder: (context) => GestureDetector(
       behavior: HitTestBehavior.opaque,

@@ -1,23 +1,45 @@
-import 'package:equatable/equatable.dart';
+class RegisterModel {
+  User? user;
 
-class AppUser extends Equatable {
-  final String id;
-  final String email;
-  final String? name;
-  final String? photoUrl;
+  RegisterModel({this.user});
 
-  const AppUser({
-    required this.id,
-    required this.email,
-    this.name,
-    this.photoUrl,
-  });
+  RegisterModel.fromJson(Map<String, dynamic> json) {
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
+  }
 
-  factory AppUser.empty() => const AppUser(id: '', email: '');
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (user != null) {
+      data['user'] = user!.toJson();
+    }
+    return data;
+  }
+}
 
-  bool get isEmpty => id.isEmpty;
-  bool get isNotEmpty => id.isNotEmpty;
+class User {
+  String? phone;
+  int? id;
+  String? userName;
+  Null verifiedAt;
+  String? token;
 
-  @override
-  List<Object?> get props => [id, email, name, photoUrl];
+  User({this.phone, this.id, this.userName, this.verifiedAt, this.token});
+
+  User.fromJson(Map<String, dynamic> json) {
+    phone = json['phone'];
+    id = json['id'];
+    userName = json['userName'];
+    verifiedAt = json['verifiedAt'];
+    token = json['token'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['phone'] = phone;
+    data['id'] = id;
+    data['userName'] = userName;
+    data['verifiedAt'] = verifiedAt;
+    data['token'] = token;
+    return data;
+  }
 }

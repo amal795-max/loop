@@ -1,13 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:loop/src/routing/global_navigator.dart';
 import 'package:loop/src/routing/app_routes.dart';
-
-import 'package:loop/src/ui/auth/login_screen.dart';
-import 'package:loop/src/ui/auth/signup_screen.dart';
-import 'package:loop/src/ui/auth/forgot_password_screen.dart';
-
-import 'package:loop/src/ui/home/home_page.dart';
-import 'package:loop/src/ui/onboarding/onboarding_page.dart';
+import 'package:loop/src/features/auth/login_screen.dart';
+import 'package:loop/src/features/auth/signup_screen.dart';
+import 'package:loop/src/features/home/home_page.dart';
+import 'package:loop/src/features/onboarding/onboarding_page.dart';
 
 
 final GoRouter appRouter = GoRouter(
@@ -30,14 +27,9 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const SignupScreen(),
     ),
     GoRoute(
-      path: AppRoutes.forgotPassword,
-      name: 'forgotPassword',
-      builder: (context, state) => const ForgotPasswordScreen(),
-    ),
-    GoRoute(
       path: AppRoutes.home,
-      name: 'home',
-      builder: (context, state) => const HomePage(),
+      name: '/',
+      builder: (context, state) => const HomeLayout(),
     ),
   ],
 );

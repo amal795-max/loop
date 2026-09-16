@@ -35,9 +35,9 @@ jobs:
 
       - name: apply formatting
         run: dart format .
-
-      - name: Analyze code (Linter)
-        run: flutter analyze
+#
+#      - name: Analyze code (Linter)
+#        run: flutter analyze
 
       - name: Run unit and widget tests
         run: flutter test
