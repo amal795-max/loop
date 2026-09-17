@@ -1,5 +1,5 @@
 import 'package:loop/src/imports/core_imports.dart';
-import '../profile/profile_screem.dart';
+import '../profile/profile_screen.dart';
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
 

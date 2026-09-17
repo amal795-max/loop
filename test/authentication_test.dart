@@ -102,7 +102,7 @@ void main() {
     test('checkAuthState returns user when token exists', () async {
       // Arrange
       when(() => mockRepository.checkAuthState())
-          .thenAnswer((_) async => right(UserInfoModel()));
+          .thenAnswer((_) async => right(const UserInfoModel()));
 
       // Act
       final result = await mockRepository.checkAuthState();
